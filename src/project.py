@@ -3,12 +3,10 @@ import sys
 import re
 import copy
 
-"""
 def removeApostrophe(reviews):
 	for i in range(len(reviews)):
-		reviews[i] = reviews[i].replace("\\'", "")
+		reviews[i] = str(reviews[i]).replace("\\'", "")
 	return reviews
-"""
 
 def removeWord(review, word):
 	return re.sub(r"\b{}\b".format(word), "", review)
@@ -59,23 +57,13 @@ def printNonZero(d):
 		if d[key] != 0:
 			print(key, d[key])
 
-# A tester
-def findVector(targetWord, fileObject):
-	for line in fileObject:
-		l = line.split()
-		if targetWord == l[0]:
-			return [float(v) for v in l[1:len(l)]]
-	return []
-
 def createZ(d, filePath):
 	Z = []
-	file = open(filePath, "r")
-	for key in d:
-		vector = findVector(key, file)
-		if vector:
-			Z.extend(vector)
-		else:
-			print(key)
+	f = open(filePath, "r")
+	for line in f:
+		l = line.split()
+		if l[0] in d:
+			Z.append([float(v) for v in l[1:len(l)]])
 
 	return Z
 
@@ -90,6 +78,7 @@ def main(argv):
 	#specialChar = ['\.', '\,', '\?', '\!', '\(', '\)', '\:', '\-', "\\'"]
 
 	reviews = list(df1['review'])
+	reviews = removeApostrophe(reviews)
 	reviews = removeNonAlphanumeric(reviews)
 	reviews = lowercase(reviews)
 	# Stem the reviews
@@ -101,7 +90,9 @@ def main(argv):
 
 	rating = list(df1['user_rating'])
 
-	print(len(d))
+	print(d['line'])
+
+	print('flirty' in d)
 
 	Z = createZ(d, "../../word2vec/word2vec.txt")
 	print(len(Z))
