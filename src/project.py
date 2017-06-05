@@ -2,6 +2,7 @@ import pandas
 import sys
 import re
 import copy
+import subprocess
 
 def removeApostrophe(reviews):
 	for i in range(len(reviews)):
@@ -29,6 +30,16 @@ def removeNonAlphanumeric(reviews):
 	for i in range(len(reviews)):
 		reviews[i] = re.sub('[^A-Za-z0-9\s]+', ' ', reviews[i])
 	return reviews
+
+def stemReviews(reviews, path):
+	for i in range(len(reviews)):
+		reviews[i] = stemReview(reviews[i], path)
+	return reviews
+
+def stemReview(review, path):
+	t = subprocess.Popen(["perl", path], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
+	stemmed = t.communicate(input=review)
+	return stemmed[0].strip()
 
 def lowercase(reviews):
 	# Converts the list of review 'reviews' to lower case
@@ -100,7 +111,7 @@ def main(argv):
 	reviews = removeApostrophe(reviews)
 	reviews = removeNonAlphanumeric(reviews)
 	reviews = lowercase(reviews)
-	# Stem the reviews
+	stemReviews(reviews, "./stemmer.pl")
 	reviews = removeWordsFromList(reviews, stopWords)
 	wordList = getWordList(reviews)
 	d = initDictionary(wordList)
@@ -112,9 +123,7 @@ def main(argv):
 	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
 
 	print(len(Z))
-
-	#print(list(d)[0])
-	#print(Z[index[list(d)[0]]])
+	print(len(Z[0]))
 
 if __name__ == '__main__':
 	main(sys.argv)
