@@ -5,9 +5,11 @@ import copy
 import subprocess
 
 def removeApostrophe(reviews):
+	res = []
 	for i in range(len(reviews)):
-		reviews[i] = str(reviews[i]).replace("\\'", "")
-	return reviews
+		res.append(str(reviews[i]).replace("\\'", ""))
+		#reviews[i] = str(reviews[i]).replace("\\'", "")
+	return res
 
 def removeWord(review, word):
 	# Removes the word 'word' from the review 'review'
@@ -20,21 +22,27 @@ def removeWords(review, words):
 	return review
 
 def removeWordsFromList(reviews, words):
+	res = []
 	# Removes the words in the list 'words' from the list of review 'reviews'
 	for i in range(len(reviews)):
-		reviews[i] = removeWords(reviews[i], words)
-	return reviews
+		res.append(removeWords(reviews[i], words))
+		#reviews[i] = removeWords(reviews[i], words)
+	return res
 
 def removeNonAlphanumeric(reviews):
 	# Removes non alpha numeric characters from the list of reviews 'reviews'
+	res = []
 	for i in range(len(reviews)):
-		reviews[i] = re.sub('[^A-Za-z0-9\s]+', ' ', reviews[i])
-	return reviews
+		res.append(re.sub('[^A-Za-z0-9\s]+', ' ', reviews[i]))
+		#reviews[i] = re.sub('[^A-Za-z0-9\s]+', ' ', reviews[i])
+	return res
 
 def stemReviews(reviews, path):
+	res = []
 	for i in range(len(reviews)):
-		reviews[i] = stemReview(reviews[i], path)
-	return reviews
+		res.append(stemReview(reviews[i], path))
+		#reviews[i] = stemReview(reviews[i], path)
+	return res
 
 def stemReview(review, path):
 	t = subprocess.Popen(["perl", path], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
@@ -43,9 +51,11 @@ def stemReview(review, path):
 
 def lowercase(reviews):
 	# Converts the list of review 'reviews' to lower case
+	res = []
 	for i in range(len(reviews)):
-		reviews[i] = reviews[i].lower()
-	return reviews
+		res.append(reviews[i].lower())
+		#reviews[i] = reviews[i].lower()
+	return res
 
 def getWordList(reviews):
 	# Returns a list containing the words in the list of review 'reviews'
@@ -56,20 +66,23 @@ def getWordList(reviews):
 
 def initDictionary(wordList):
 	# Creates the initial dictionary where the keys are the words in 'wordList'
+	# The dictionary contains the keys but each value is 0
 	d = {}
 	for i in range(len(wordList)):
 		d[wordList[i]] = 0
 	return d
 
 def transformReviews(reviews, d):
-	# Transforms each review into a bag-of-words representation
+	# Transforms each review into its bag-of-words representation
 	copyDict = copy.copy(d)
+	res = []
 	for i in range(len(reviews)):
 		for word in reviews[i].split():
 			d[word] += 1
-		reviews[i] = d
+		res.append(d)
+		#reviews[i] = d
 		d = copyDict
-	return reviews
+	return res
 
 def printNonZero(d):
 	# Prints the key:value pairs of the dictionary that are non-zero
@@ -116,14 +129,9 @@ def main(argv):
 	wordList = getWordList(reviews)
 	d = initDictionary(wordList)
 
-	reviews = transformReviews(reviews, d)
-
-	rating = list(df1['user_rating'])
-
+	X = transformReviews(reviews, d)
+	Y = list(df1['user_rating'])
 	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
-
-	print(len(Z))
-	print(len(Z[0]))
 
 if __name__ == '__main__':
 	main(sys.argv)
