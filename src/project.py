@@ -79,7 +79,8 @@ def transformReviews(reviews, d):
 	res = []
 	for i in range(len(reviews)):
 		for word in reviews[i].split():
-			d[word] += 1
+			if word in d:
+				d[word] += 1
 		res.append(d)
 		#reviews[i] = d
 		d = copyDict.copy()
@@ -129,39 +130,100 @@ def filterRating(X, Y, r):
 
 def sumListDictionary(X):
 	temp = Counter()
-	test = 0
 	for n in X:
-		test = test + n['failed']
 		temp += Counter(n)
 	return dict(temp)
 
+def processReviews(DF):
+	res = []
+	stopWords = [line.rstrip('\n') for line in open('../../stop_words.txt')]
+	for df in DF:
+		reviews = list(df['review'])
+		reviews = removeApostrophe(reviews)
+		reviews = removeNonAlphanumeric(reviews)
+		reviews = lowercase(reviews)
+		stemReviews(reviews, "./stemmer.pl")
+		reviews = removeWordsFromList(reviews, stopWords)
+		res.append(reviews)
+	return res
+
+def preprocessWordlist(reviews):
+	wordList = getWordList(reviews)
+	return wordList
+
+def filterWords(l):
+	resList = l[0].copy()
+	for n in range(len(l)-1):
+		resList = set(resList)&set(l[n+1])
+	return list(resList)
+
 def main(argv):
-	#df1 = pandas.read_csv("../../datasets/reviews_always.csv")
-	#df1 = pandas.read_csv("../../datasets/reviews_gillette.csv")
-	df1 = pandas.read_csv("../../datasets/reviews_oral-b.csv")
-	#df1 = pandas.read_csv("../../datasets/reviews_pantene.csv")
-	#df1 = pandas.read_csv("../../datasets/reviews_tampax.csv")
+	df1 = pandas.read_csv("../../datasets/reviews_always.csv")
+	df2 = pandas.read_csv("../../datasets/reviews_gillette.csv")
+	df3 = pandas.read_csv("../../datasets/reviews_oral-b.csv")
+	df4 = pandas.read_csv("../../datasets/reviews_pantene.csv")
+	df5 = pandas.read_csv("../../datasets/reviews_tampax.csv")
+
+	listDf = []
+	listDf.append(df1)
+	listDf.append(df2)
+	listDf.append(df3)
+	listDf.append(df4)
+	listDf.append(df5)
+
+	listProcessedReviews = processReviews(listDf)
 
 	stopWords = [line.rstrip('\n') for line in open('../../stop_words.txt')]
 	#specialChar = ['\.', '\,', '\?', '\!', '\(', '\)', '\:', '\-', "\\'"]
 
-	reviews = list(df1['review'])
-	reviews = removeApostrophe(reviews)
-	reviews = removeNonAlphanumeric(reviews)
-	reviews = lowercase(reviews)
-	stemReviews(reviews, "./stemmer.pl")
-	reviews = removeWordsFromList(reviews, stopWords)
-	wordList = getWordList(reviews)
-	d = initDictionary(wordList)
+	wList1 = preprocessWordlist(listProcessedReviews[0])
+	wList2 = preprocessWordlist(listProcessedReviews[1])
+	wList3 = preprocessWordlist(listProcessedReviews[2])
+	wList4 = preprocessWordlist(listProcessedReviews[3])
+	wList5 = preprocessWordlist(listProcessedReviews[4])
 
-	X = transformReviews(reviews, d)
+	allWordList = []
+	allWordList.append(wList1)
+	allWordList.append(wList2)
+	allWordList.append(wList3)
+	allWordList.append(wList4)
+	allWordList.append(wList5)
+
+	test = filterWords(allWordList)
+
+	d = initDictionary(test)
+
+	X = transformReviews(listProcessedReviews[2], d)
 	Y = list(df1['user_rating'])
-	rating1 = filterRating(X, Y, 5)
-	rating2 = filterRating(X, Y, 5)
-	rating3 = filterRating(X, Y, 5)
-	rating4 = filterRating(X, Y, 5)
+	rating1 = filterRating(X, Y, 1)
+	rating2 = filterRating(X, Y, 2)
+	rating3 = filterRating(X, Y, 3)
+	rating4 = filterRating(X, Y, 4)
 	rating5 = filterRating(X, Y, 5)
+	sum1 = sumListDictionary(rating1)
+	sum2 = sumListDictionary(rating2)
+	sum3 = sumListDictionary(rating3)
+	sum4 = sumListDictionary(rating4)
+	sum5 = sumListDictionary(rating5)
+	print()
+	print()
+	printNonZero(sum1)
+	print()
+	print()
+	printNonZero(sum2)
+	print()
+	print()
+	printNonZero(sum3)
+	print()
+	print()
+	printNonZero(sum4)
+	print()
+	print()
+	printNonZero(sum5)
+	print()
+	print()
 #	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
+	print(len(test))
 
 if __name__ == '__main__':
 	main(sys.argv)
