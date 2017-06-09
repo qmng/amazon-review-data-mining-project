@@ -3,6 +3,7 @@ import sys
 import re
 import copy
 import subprocess
+from collections import Counter
 
 def removeApostrophe(reviews):
 	res = []
@@ -74,20 +75,26 @@ def initDictionary(wordList):
 
 def transformReviews(reviews, d):
 	# Transforms each review into its bag-of-words representation
-	copyDict = copy.copy(d)
+	copyDict = d.copy()
 	res = []
 	for i in range(len(reviews)):
 		for word in reviews[i].split():
 			d[word] += 1
 		res.append(d)
 		#reviews[i] = d
-		d = copyDict
+		d = copyDict.copy()
 	return res
 
 def printNonZero(d):
 	# Prints the key:value pairs of the dictionary that are non-zero
 	for key in d:
 		if d[key] != 0:
+			print(key, d[key])
+
+def printThreshold(d, t):
+	# Prints the key:value pairs of the dictionary with value higher than a threshold t
+	for key in d:
+		if d[key] >= t:
 			print(key, d[key])
 
 def createZ(d, filePath):
@@ -110,6 +117,24 @@ def createZ(d, filePath):
 
 	return [Z, index]
 
+def filterRating(X, Y, r):
+	listIndex = []
+	filteredX = []
+	for n in range(len(Y)):
+		if Y[n] == r:
+			listIndex.append(n)
+	for i in listIndex:
+		filteredX.append(X[i])
+	return filteredX
+
+def sumListDictionary(X):
+	temp = Counter()
+	test = 0
+	for n in X:
+		test = test + n['failed']
+		temp += Counter(n)
+	return dict(temp)
+
 def main(argv):
 	#df1 = pandas.read_csv("../../datasets/reviews_always.csv")
 	#df1 = pandas.read_csv("../../datasets/reviews_gillette.csv")
@@ -131,7 +156,12 @@ def main(argv):
 
 	X = transformReviews(reviews, d)
 	Y = list(df1['user_rating'])
-	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
+	rating1 = filterRating(X, Y, 5)
+	rating2 = filterRating(X, Y, 5)
+	rating3 = filterRating(X, Y, 5)
+	rating4 = filterRating(X, Y, 5)
+	rating5 = filterRating(X, Y, 5)
+#	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
 
 if __name__ == '__main__':
 	main(sys.argv)
