@@ -31,13 +31,3 @@ train = df5.sample(frac=0.7)
 test = df5.drop(train.index)
 train.to_csv('train_tampax.csv')
 test.to_csv('test_tampax.csv')
-
-path = "../../datasets"
-allfiles = glob.glob(os.path.join(path,"*.csv"))
-
-np_array_list = []
-for f in allfiles:
-	df = pandas.read_csv(f, index_col=None, header=0)
-	np_array_list.append(df.as_matrix())
-comb_np_array = numpy.vstack(np_array_list)
-csvData = pandas.DataFrame(comb_np_array)

@@ -3,6 +3,7 @@ import sys
 import re
 import copy
 import subprocess
+import math
 import numpy as np
 from collections import Counter
 
@@ -135,18 +136,15 @@ def sumListDictionary(X):
 		temp += Counter(n)
 	return dict(temp)
 
-def processReviews(DF):
-	res = []
+def processReviews(df):
 	stopWords = [line.rstrip('\n') for line in open('../../stop_words.txt')]
-	for df in DF:
-		reviews = list(df['review'])
-		reviews = removeApostrophe(reviews)
-		reviews = removeNonAlphanumeric(reviews)
-		reviews = lowercase(reviews)
-		stemReviews(reviews, "./stemmer.pl")
-		reviews = removeWordsFromList(reviews, stopWords)
-		res.append(reviews)
-	return res
+	reviews = list(df['review'])
+	reviews = removeApostrophe(reviews)
+	reviews = removeNonAlphanumeric(reviews)
+	reviews = lowercase(reviews)
+	stemReviews(reviews, "./stemmer.pl")
+	reviews = removeWordsFromList(reviews, stopWords)
+	return reviews
 
 def preprocessWordlist(reviews):
 	wordList = getWordList(reviews)
@@ -158,78 +156,44 @@ def filterWords(l):
 		resList = set(resList)&set(l[n+1])
 	return list(resList)
 
-def formatY(rating):
-	res = np.zeros(5)
-	res[rating-1] = 1
+def getVector(wordList, bag):
+	res = []
+	for d in bag:
+		resTemp = []
+		for i in range(len(wordList)):
+			resTemp.append(d[wordList[i]])
+		res.append(resTemp)
+	return res
+
+def formatX(df):
+	reviews = processReviews(df)
+	wordList = preprocessWordlist(reviews)
+	d = initDictionary(wordList)
+	bag = transformReviews(reviews, d)
+	vec = getVector(wordList, bag)
+	return vec
+
+def formatY(df):
+	Y = list(df['user_rating'])
+	res = []
+	for n in Y:
+		temp = np.zeros(5)
+		temp[int(n)-1] = 1
+		res.append(temp)
 	return res
 
 def main(argv):
-	df1 = pandas.read_csv("../../datasets/reviews_always.csv")
-	df2 = pandas.read_csv("../../datasets/reviews_gillette.csv")
-	df3 = pandas.read_csv("../../datasets/reviews_oral-b.csv")
-	df4 = pandas.read_csv("../../datasets/reviews_pantene.csv")
-	df5 = pandas.read_csv("../../datasets/reviews_tampax.csv")
+#	df5 = pandas.read_csv("../../datasets/reviews_tampax.csv")
 
-	listDf = []
-	listDf.append(df1)
-	listDf.append(df2)
-	listDf.append(df3)
-	listDf.append(df4)
-	listDf.append(df5)
+	df = pandas.read_csv("test_pantene.csv")
 
-	listProcessedReviews = processReviews(listDf)
+	X = formatX(df)
+	print(len(X))
 
-	stopWords = [line.rstrip('\n') for line in open('../../stop_words.txt')]
-	#specialChar = ['\.', '\,', '\?', '\!', '\(', '\)', '\:', '\-', "\\'"]
+	Y = formatY(df)
+	print(len(Y))
 
-	wList1 = preprocessWordlist(listProcessedReviews[0])
-	wList2 = preprocessWordlist(listProcessedReviews[1])
-	wList3 = preprocessWordlist(listProcessedReviews[2])
-	wList4 = preprocessWordlist(listProcessedReviews[3])
-	wList5 = preprocessWordlist(listProcessedReviews[4])
-
-	allWordList = []
-	allWordList.append(wList1)
-	allWordList.append(wList2)
-	allWordList.append(wList3)
-	allWordList.append(wList4)
-	allWordList.append(wList5)
-
-	test = filterWords(allWordList)
-
-	d = initDictionary(test)
-
-	X = transformReviews(listProcessedReviews[2], d)
-	Y = list(df1['user_rating'])
-	rating1 = filterRating(X, Y, 1)
-	rating2 = filterRating(X, Y, 2)
-	rating3 = filterRating(X, Y, 3)
-	rating4 = filterRating(X, Y, 4)
-	rating5 = filterRating(X, Y, 5)
-	sum1 = sumListDictionary(rating1)
-	sum2 = sumListDictionary(rating2)
-	sum3 = sumListDictionary(rating3)
-	sum4 = sumListDictionary(rating4)
-	sum5 = sumListDictionary(rating5)
-	print()
-	print()
-	printNonZero(sum1)
-	print()
-	print()
-	printNonZero(sum2)
-	print()
-	print()
-	printNonZero(sum3)
-	print()
-	print()
-	printNonZero(sum4)
-	print()
-	print()
-	printNonZero(sum5)
-	print()
-	print()
 #	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
-	print(len(test))
 
 if __name__ == '__main__':
 	main(sys.argv)
