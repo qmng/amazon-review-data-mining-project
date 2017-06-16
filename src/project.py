@@ -165,7 +165,7 @@ def getVector(wordList, bag):
 		res.append(resTemp)
 	return res
 
-def formatX(df):
+def formatBaseX(df):
 	reviews = processReviews(df)
 	wordList = preprocessWordlist(reviews)
 	d = initDictionary(wordList)
@@ -187,7 +187,7 @@ def main(argv):
 
 	df = pandas.read_csv("test_pantene.csv")
 
-	X = formatX(df)
+	X = formatBaseX(df)
 	print(len(X))
 
 	Y = formatY(df)
