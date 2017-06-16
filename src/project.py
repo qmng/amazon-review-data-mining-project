@@ -104,8 +104,8 @@ def createZ(d, filePath):
 	# Creates matrix Z containg the vector representation of the words in the dictionary
 	# Also returns the index to get the correspondig vector of a word
 	# Example:
-	# index['amazon'] will return the index of the vector of 'amazon' in Z
-	# Z[index['amazon']] will return the vector of 'amazon'
+	# index['amazon'] will return the index of Z where the vector representation of the word 'amazon' is
+	# Thus, Z[index['amazon']] will return the vector representation of the word 'amazon'
 	Z = []
 	i = 0
 	index = {}
