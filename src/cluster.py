@@ -29,10 +29,21 @@ def metawordsTest():
 	return [metawords, metadict]
 
 def createMetaWords(words, Z, index, delta):
+	"""
+	Changes bag of words by combining words that are similar semantically.
+	Words that are close have a close vectore representation.
+
+	Params:
+	- words: List of words in bag of words.
+	- Z: Matrix containing the vector representation of the words.
+	- index: Dictionary containing the index of each word in Z.
+	- delta: The maximum distance between two semantically close words.
+
+	Returns the list of metawords and a dictionary where the keys are the words and the values are the corresponding metawords
+	"""
 	metaId = 0
 	metawords = []
 	metadict = {}
-
 
 	while (words):
 		w1 = words[0]
@@ -55,6 +66,16 @@ def createMetaWords(words, Z, index, delta):
 	return [metawords, metadict]
 
 def getMetaReview(review, metawords, metadict):
+	"""
+	Computes the metareview of a review.
+	
+
+	Params:
+	- review: The review in bag of words format.
+	- metawords: The list of metawords.
+	- metadict: A dictionary where keys are the normal words and values are the corresponding metawords
+	"""
+
 	metaReview = {}
 	for i in range(len(metawords)):
 		metaReview[metawords[i]] = 0
