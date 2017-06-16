@@ -1,4 +1,6 @@
 import numpy as np
+import project
+import pandas
 
 def metawordsTest():
 	words = ['a', 'b', 'c', 'd', 'e', 'f']
@@ -62,20 +64,33 @@ def getMetaReview(review, metawords, metadict):
 
 	return metaReview
 
+def formatClusterX(df):
+	delta = 10**(1) * 2
+	reviews = project.processReviews(df)
+	wordList = project.preprocessWordlist(reviews)
+	d = project.initDictionary(wordList)
+	[Z, index] = project.createZ(d, "../../word2vec/word2vec.txt")
+	[metawords, metadict] = createMetaWords(list(index.keys()), Z, index, delta)
+	return [metawords, metadict]
+
 def main():
-	words = ['a', 'b', 'c', 'd', 'e', 'f']
-	Z = [[1,2], [1,2], [2,2], [2,2], [3,3], [3,3]]
-	index = {'a': 0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5}
-	delta = 10**(-15)
+#	words = ['a', 'b', 'c', 'd', 'e', 'f']
+#	Z = [[1,2], [1,2], [2,2], [2,2], [3,3], [3,3]]
+#	index = {'a': 0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5}
+#	delta = 10**(-15)
+	df = pandas.read_csv("test_pantene.csv")
 
-	[metawords, metadict] = createMetaWords(words, Z, index, delta)
+	[metawords, metadict] = formatClusterX(df)
 
-	print(metawords)
-	print(metadict)
+#	print(metawords)
+#	print(metadict)
+	
+#	print(len(metawords))
+#	print(len(metadict))
 
-	review = {'a':2, 'b':3, 'c':3, 'd':0, 'e':0, 'f':0}
-	metaReview = getMetaReview(review, metawords, metadict)
-	print(metaReview)
+#	review = {'a':2, 'b':3, 'c':3, 'd':0, 'e':0, 'f':0}
+#	metaReview = getMetaReview(review, metawords, metadict)
+#	print(metaReview)
 
 if __name__ == '__main__':
 	main()
