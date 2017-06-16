@@ -5,6 +5,7 @@ import copy
 import subprocess
 import math
 import numpy as np
+import tensorflow_wrapper as tw
 from collections import Counter
 
 def removeApostrophe(reviews):
@@ -185,13 +186,18 @@ def formatY(df):
 def main(argv):
 #	df5 = pandas.read_csv("../../datasets/reviews_tampax.csv")
 
-	df = pandas.read_csv("test_pantene.csv")
+	df_train = pandas.read_csv("train_pantene.csv")
+	df_test = pandas.read_csv("test_pantene.csv")
 
-	X = formatBaseX(df)
-	print(len(X))
+	trainX = formatBaseX(df_train)
+	testX = formatBaseX(df_test)
 
-	Y = formatY(df)
-	print(len(Y))
+	trainY = formatY(df_train)
+	testY = formatY(df_test)
+
+	numEpochs = 100
+	alpha = 0.0008
+	tw.regression(trainX, trainY, testX, testY, numEpochs, alpha)
 
 #	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
 
