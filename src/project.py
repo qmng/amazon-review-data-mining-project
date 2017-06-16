@@ -4,6 +4,7 @@ import re
 import copy
 import subprocess
 import math
+import cluster
 import numpy as np
 import tensorflow_wrapper as tw
 from collections import Counter
@@ -182,11 +183,30 @@ def formatY(df):
 		res.append(temp)
 	return res
 
-def main(argv):
-#	df5 = pandas.read_csv("../../datasets/reviews_tampax.csv")
+def clusterDemo(product):
+	allpath = "../../datasets/reviews_"+product+".csv"
+	trainpath = "train_"+product+".csv"
+	testpath = "test_"+product+".csv"
 
-	product = argv[1]
+	df_train = pandas.read_csv(trainpath)
+	df_test = pandas.read_csv(testpath)
 
+	df = pandas.read_csv(allpath)
+	reviews = processReviews(df)
+	wordList = preprocessWordlist(reviews)
+
+	trainX = np.array(cluster.formatClusterX(df_train, wordList))
+	testX = np.array(cluster.formatClusterX(df_test, wordList))
+
+	trainY = np.array(formatY(df_train))
+	testY = np.array(formatY(df_test))
+	
+	numEpochs = 1000
+	alpha = 0.0008
+
+	tw.regression(trainX, trainY, testX, testY, numEpochs, alpha)
+
+def baseDemo(product):
 	allpath = "../../datasets/reviews_"+product+".csv"
 	trainpath = "train_"+product+".csv"
 	testpath = "test_"+product+".csv"
@@ -207,6 +227,13 @@ def main(argv):
 	numEpochs = 1000
 	alpha = 0.0008
 	tw.regression(trainX, trainY, testX, testY, numEpochs, alpha)
+
+def main(argv):
+#	df5 = pandas.read_csv("../../datasets/reviews_tampax.csv")
+
+	product = argv[1]
+
+	clusterDemo(product)
 
 #	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
 

@@ -20,7 +20,6 @@ def metawordsTest():
 
 		for w3 in temp:
 			words.remove(w3)
-		print(temp)
 
 		metawords.append(metaId)
 		metadict[metaId] = temp
@@ -85,14 +84,35 @@ def getMetaReview(review, metawords, metadict):
 
 	return metaReview
 
-def formatClusterX(df):
+def getMetaVect(review):
+	return list(review.values())
+
+def filterReviews(reviews, Zindex):
+	res = []
+	for review in reviews:
+		temp = {}
+		for key in review:
+			if key in Zindex.keys():
+				temp[key] = review[key]
+		if temp:
+			res.append(temp)
+	return res
+
+def formatClusterX(df, wordList):
+	metaReviews = []
 	delta = 10**(1) * 2
 	reviews = project.processReviews(df)
-	wordList = project.preprocessWordlist(reviews)
 	d = project.initDictionary(wordList)
 	[Z, index] = project.createZ(d, "../../word2vec/word2vec.txt")
 	[metawords, metadict] = createMetaWords(list(index.keys()), Z, index, delta)
-	return [metawords, metadict]
+	trReviews = project.transformReviews(reviews, d)
+	trReviews = filterReviews(trReviews, index)
+	for i in range(len(trReviews)):
+		
+		metaReview = getMetaReview(trReviews[i], metawords, metadict)
+		metaVec = getMetaVect(metaReview)
+		metaReviews.append(metaVec)
+	return metaReviews
 
 def main():
 #	words = ['a', 'b', 'c', 'd', 'e', 'f']
