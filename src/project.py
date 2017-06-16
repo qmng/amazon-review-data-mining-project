@@ -3,6 +3,7 @@ import sys
 import re
 import copy
 import subprocess
+import numpy as np
 from collections import Counter
 
 def removeApostrophe(reviews):
@@ -156,6 +157,11 @@ def filterWords(l):
 	for n in range(len(l)-1):
 		resList = set(resList)&set(l[n+1])
 	return list(resList)
+
+def formatY(rating):
+	res = np.zeros(5)
+	res[rating-1] = 1
+	return res
 
 def main(argv):
 	df1 = pandas.read_csv("../../datasets/reviews_always.csv")
