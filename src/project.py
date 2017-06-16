@@ -166,11 +166,10 @@ def getVector(wordList, bag):
 		res.append(resTemp)
 	return res
 
-def formatBaseX(df):
-	reviews = processReviews(df)
-	wordList = preprocessWordlist(reviews)
+def formatBaseX(df, wordList):
+	reviewsshort = processReviews(df)
 	d = initDictionary(wordList)
-	bag = transformReviews(reviews, d)
+	bag = transformReviews(reviewsshort, d)
 	vec = getVector(wordList, bag)
 	return vec
 
@@ -186,16 +185,26 @@ def formatY(df):
 def main(argv):
 #	df5 = pandas.read_csv("../../datasets/reviews_tampax.csv")
 
-	df_train = pandas.read_csv("train_pantene.csv")
-	df_test = pandas.read_csv("test_pantene.csv")
+	product = argv[1]
 
-	trainX = formatBaseX(df_train)
-	testX = formatBaseX(df_test)
+	allpath = "../../datasets/reviews_"+product+".csv"
+	trainpath = "train_"+product+".csv"
+	testpath = "test_"+product+".csv"
 
-	trainY = formatY(df_train)
-	testY = formatY(df_test)
+	df_train = pandas.read_csv(trainpath)
+	df_test = pandas.read_csv(testpath)
+	
+	df = pandas.read_csv(allpath)
+	reviews = processReviews(df)
+	wordList = preprocessWordlist(reviews)
 
-	numEpochs = 100
+	trainX = np.array(formatBaseX(df_train, wordList))
+	testX = np.array(formatBaseX(df_test, wordList))
+
+	trainY = np.array(formatY(df_train))
+	testY = np.array(formatY(df_test))
+
+	numEpochs = 1000
 	alpha = 0.0008
 	tw.regression(trainX, trainY, testX, testY, numEpochs, alpha)
 
