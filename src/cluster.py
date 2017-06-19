@@ -98,30 +98,14 @@ def filterReviews(reviews, Zindex):
 			res.append(temp)
 	return res
 
-def formatClusterX(df, wordList):
-	metaReviews = []
-	delta = 10**(1) * 2
-	reviews = project.processReviews(df)
-	d = project.initDictionary(wordList)
-	[Z, index] = project.createZ(d, "../../word2vec/word2vec.txt")
-	[metawords, metadict] = createMetaWords(list(index.keys()), Z, index, delta)
-	trReviews = project.transformReviews(reviews, d)
-	trReviews = filterReviews(trReviews, index)
-	for i in range(len(trReviews)):
-		
-		metaReview = getMetaReview(trReviews[i], metawords, metadict)
-		metaVec = getMetaVect(metaReview)
-		metaReviews.append(metaVec)
-	return metaReviews
-
-def main():
+#def main():
 #	words = ['a', 'b', 'c', 'd', 'e', 'f']
 #	Z = [[1,2], [1,2], [2,2], [2,2], [3,3], [3,3]]
 #	index = {'a': 0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5}
 #	delta = 10**(-15)
-	df = pandas.read_csv("test_pantene.csv")
+#	df = pandas.read_csv("test_pantene.csv")
 
-	[metawords, metadict] = formatClusterX(df)
+#	[metawords, metadict] = formatClusterX(df)
 
 #	print(metawords)
 #	print(metadict)
@@ -133,5 +117,5 @@ def main():
 #	metaReview = getMetaReview(review, metawords, metadict)
 #	print(metaReview)
 
-if __name__ == '__main__':
-	main()
+#if __name__ == '__main__':
+#	main()
