@@ -67,7 +67,7 @@ def createMetaWords(words, Z, index, delta):
 def getMetaReview(review, metawords, metadict):
 	"""
 	Computes the metareview of a review.
-	
+
 
 	Params:
 	- review: The review in bag of words format.
@@ -98,24 +98,75 @@ def filterReviews(reviews, Zindex):
 			res.append(temp)
 	return res
 
-#def main():
-#	words = ['a', 'b', 'c', 'd', 'e', 'f']
-#	Z = [[1,2], [1,2], [2,2], [2,2], [3,3], [3,3]]
-#	index = {'a': 0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5}
-#	delta = 10**(-15)
-#	df = pandas.read_csv("test_pantene.csv")
+def convertMetaDict(metadict, metawords):
+	"""
+	Converts metadict format.
+	Metadict is in format {w1: mw1, w2: m1, w3: m2, w4: m2}
+	Returned format is {m1: [w1, w2], m2: [w3, w4]}
+	"""
 
-#	[metawords, metadict] = formatClusterX(df)
+	res = {}
+	for mw in metawords:
+		res[mw] =[]
+		for key in metadict:
+			if metadict[key] == mw:
+				res[mw].append(key)
 
-#	print(metawords)
-#	print(metadict)
-	
-#	print(len(metawords))
-#	print(len(metadict))
+	return res
 
-#	review = {'a':2, 'b':3, 'c':3, 'd':0, 'e':0, 'f':0}
-#	metaReview = getMetaReview(review, metawords, metadict)
-#	print(metaReview)
+def createMetaZ(Z, index, metawords, metadict):
+	metaZ = []
+	metaIndex = {}
+	c = 0
 
-#if __name__ == '__main__':
-#	main()
+	Z = np.array(Z)
+
+	for mw in metawords:
+		avg = np.zeros(Z[0].shape)
+		uniqueWordCount = len(metadict[mw])
+		for w in metadict[mw]:
+			avg += Z[index[w]]
+		metaZ.append(avg/uniqueWordCount)
+		metaIndex[mw] = c
+		c += 1
+
+	return [metaZ, metaIndex]
+
+def main():
+	"""
+	words = ['a', 'b', 'c', 'd', 'e', 'f']
+	Z = [[1,2], [1,2], [2,2], [2,2], [3,3], [3,3]]
+	index = {'a': 0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5}
+	delta = 10**(-15)
+	df = pandas.read_csv("test_pantene.csv")
+
+	[metawords, metadict] = formatClusterX(df)
+
+	print(metawords)
+	print(metadict)
+
+	print(len(metawords))
+	print(len(metadict))
+
+	review = {'a':2, 'b':3, 'c':3, 'd':0, 'e':0, 'f':0}
+	metaReview = getMetaReview(review, metawords, metadict)
+	print(metaReview)
+	"""
+
+	words = ['a', 'b', 'c', 'd', 'e', 'f']
+	Z = [[1,2], [1,2], [2,2], [2,2], [3,3], [3,3]]
+	index = {'a': 0, 'b':1, 'c':2, 'd':3, 'e':4, 'f':5}
+	delta = 10**(-15)
+	[metawords, metadict] = createMetaWords(words, Z, index, delta)
+
+	print(metawords)
+	print(metadict)
+	convertedDict = convertMetaDict(metadict, metawords)
+
+	[metaZ, metaIndex] = createMetaZ(Z, index, metawords, convertedDict)
+
+	print(metaZ)
+	print(metaIndex)
+
+if __name__ == '__main__':
+	main()
