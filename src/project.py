@@ -71,6 +71,60 @@ def baseDemo(product, numEpochs, alpha):
 	#Tensor Flow regression
 	tw.regression(trainX, trainY, testX, testY, numEpochs, alpha)
 
+def averageDemo(product, numEpochs, alpha):
+	#Create path of all the reviews
+	allpath = "../../datasets/reviews_"+product+".csv"
+	#Create paths of training and testing reviews
+	trainpath = "train_"+product+".csv"
+	testpath = "test_"+product+".csv"
+
+	#Read reviews
+	df_train = pandas.read_csv(trainpath)
+	df_test = pandas.read_csv(testpath)
+	df = pandas.read_csv(allpath)
+
+	#Prepare the wordList for the product
+	reviews = process.processReviews(df)
+	wordList = process.preprocessWordlist(reviews)
+
+	#Create the vectors of the bag of words
+	trainX = np.array(process.formatAverageX(df_train, wordList))
+	testX = np.array(process.formatAverageX(df_test, wordList))
+
+	#Create the vectors of the evaluations
+	trainY = np.array(process.formatY(df_train))
+	testY = np.array(process.formatY(df_test))
+
+	#Tensor Flow regression
+	tw.regression(trainX, trainY, testX, testY, numEpochs, alpha)
+
+def fusionDemo(product, numEpochs, alpha, delta):
+	#Create path of all the reviews
+	allpath = "../../datasets/reviews_"+product+".csv"
+	#Create paths of training and testing reviews
+	trainpath = "train_"+product+".csv"
+	testpath = "test_"+product+".csv"
+
+	#Read reviews
+	df_train = pandas.read_csv(trainpath)
+	df_test = pandas.read_csv(testpath)
+	df = pandas.read_csv(allpath)
+
+	#Prepare the wordList for the product
+	reviews = process.processReviews(df)
+	wordList = process.preprocessWordlist(reviews)
+
+	#Create the vectors of the bag of words using word2vec.txt
+	trainX = np.array(process.formatFusionX(df_train, wordList, delta))
+	testX = np.array(process.formatFusionX(df_test, wordList, delta))
+
+	#Create the vectors of the evaluations
+	trainY = np.array(process.formatY(df_train))
+	testY = np.array(process.formatY(df_test))
+	
+	#Tensor Flow regression
+	tw.regression(trainX, trainY, testX, testY, numEpochs, alpha)
+
 def main(argv):
 	model = argv[1]
 	product = argv[2]
@@ -82,6 +136,11 @@ def main(argv):
 	elif model == "cluster":
 		delta = float(argv[5])
 		clusterDemo(product, numEpochs, alpha, delta)
+	elif model == "average":
+		averageDemo(product, numEpochs, alpha)
+	elif model == "fusion":
+		delta = float(argv[5])
+		fusionDemo(product, numEpochs, alpha, delta)
 
 if __name__ == '__main__':
 	main(sys.argv)

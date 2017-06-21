@@ -117,14 +117,15 @@ def convertMetaDict(metadict, metawords):
 def createMetaZ(Z, index, metawords, metadict):
 	metaZ = []
 	metaIndex = {}
+	convertedDict = convertMetaDict(metadict, metawords)
 	c = 0
 
 	Z = np.array(Z)
 
 	for mw in metawords:
 		avg = np.zeros(Z[0].shape)
-		uniqueWordCount = len(metadict[mw])
-		for w in metadict[mw]:
+		uniqueWordCount = len(convertedDict[mw])
+		for w in convertedDict[mw]:
 			avg += Z[index[w]]
 		metaZ.append(avg/uniqueWordCount)
 		metaIndex[mw] = c
@@ -161,9 +162,8 @@ def main():
 
 	print(metawords)
 	print(metadict)
-	convertedDict = convertMetaDict(metadict, metawords)
 
-	[metaZ, metaIndex] = createMetaZ(Z, index, metawords, convertedDict)
+	[metaZ, metaIndex] = createMetaZ(Z, index, metawords, metadict)
 
 	print(metaZ)
 	print(metaIndex)

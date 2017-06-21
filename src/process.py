@@ -3,6 +3,7 @@ import copy
 import subprocess
 import math
 import cluster
+import average
 import numpy as np
 from collections import Counter
 
@@ -94,11 +95,25 @@ def formatClusterX(df, wordList, delta):
 	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
 	[metawords, metadict] = cluster.createMetaWords(list(index.keys()), Z, index, delta)
 	trReviews = transformReviews(reviews, d)
-	trReviews = cluster.filterReviews(trReviews, index)
+	trReviews = filterReviews(trReviews, index)
 	for i in range(len(trReviews)):
 		metaReview = cluster.getMetaReview(trReviews[i], metawords, metadict)
 		metaVec = cluster.getMetaVect(metaReview)
 		metaReviews.append(metaVec)
+	return metaReviews
+
+def formatFusionX(df, wordList, delta):
+	metaReviews = []
+	reviews = processReviews(df)
+	d = initDictionary(wordList)
+	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
+	[metawords, metadict] = cluster.createMetaWords(list(index.keys()), Z, index, delta)
+	trReviews = transformReviews(reviews, d)
+	trReviews = filterReviews(trReviews, index)
+	[metaZ, metaIndex] = cluster.createMetaZ(Z, index, metawords, metadict)
+	for i in range(len(trReviews)):
+		metaReview = cluster.getMetaReview(trReviews[i], metawords, metadict)
+		metaReviews.append(average.getAverageReviewVector(metaReview, metaZ, metaIndex))
 	return metaReviews
 
 def createZ(d, filePath):
@@ -174,6 +189,17 @@ def formatBaseX(df, wordList):
 	vec = getVector(wordList, bag)
 	return vec
 
+def formatAverageX(df, wordList):
+	avgReviews = []
+	reviews = processReviews(df)
+	d = initDictionary(wordList)
+	[Z, index] = createZ(d, "../../word2vec/word2vec.txt")
+	trReviews = transformReviews(reviews, d)
+	trReviews = filterReviews(trReviews, index)
+	for i in range(len(trReviews)):
+		avgReviews.append(average.getAverageReviewVector(trReviews[i], Z, index))
+	return avgReviews
+
 def formatY(df):
 	Y = list(df['user_rating'])
 	res = []
@@ -182,3 +208,16 @@ def formatY(df):
 		temp[int(n)-1] = 1
 		res.append(temp)
 	return res
+
+#Removes words from reviews which are not in Z
+def filterReviews(reviews, Zindex):
+	res = []
+	for review in reviews:
+		temp = {}
+		for key in review:
+			if key in Zindex.keys():
+				temp[key] = review[key]
+		if temp:
+			res.append(temp)
+	return res
+
