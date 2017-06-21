@@ -66,4 +66,7 @@ for i in range(numEpochs):
 		print(train_accuracy)
 
 # Testing
-print("final accuracy test on test set: %s" %str(sess.run(accuracy_OP, feed_dict={x: testX, y: testY})))
+testing = sess.run(correct_OP, feed_dict={x: testX, y: testY}) # testing will contain the application of 'correct_OP' on 'feed_dict', will be useful for McNemar test
+print(testing)
+#print("final accuracy test on test set: %s" %str(testing))
+#print("final accuracy test on test set: %s" %str(sess.run(accuracy_OP, feed_dict={x: testX, y: testY})))
