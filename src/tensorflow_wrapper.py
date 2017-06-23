@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-def getTrainingSession(trainX, trainY, numEpochs, learningRate):
+def getTrainingSession(trainX, trainY, numEpochs, learningRate, weights, bias):
 	numFeatures = trainX.shape[1]
 	numLabels = trainY.shape[1]
 
@@ -15,8 +15,8 @@ def getTrainingSession(trainX, trainY, numEpochs, learningRate):
 	y = tf.placeholder(tf.float32, [None, numLabels])
 
 	# Define weight and bias variables
-	weights = tf.Variable(tf.zeros([numFeatures, numLabels]))
-	bias  = tf.Variable(tf.ones([1, numLabels]))
+	#weights = tf.Variable(tf.zeros([numFeatures, numLabels]))
+	#bias  = tf.Variable(tf.ones([1, numLabels]))
 
 
 	# Define operations
@@ -39,7 +39,7 @@ def getTrainingSession(trainX, trainY, numEpochs, learningRate):
 	for i in range(numEpochs):
 		step = sess.run(training_OP, feed_dict={x: trainX, y: trainY}) # run training
 
-	return [sess, weights, bias]
+	return sess
 
 def getResultAccuracy(session, testX, testY, weights, bias):
 	resultVector = getResultVector(session, testX, testY, weights, bias)
@@ -61,7 +61,7 @@ def getResultVector(session, testX, testY, weights, bias):
 
 	return session.run(correct_OP, feed_dict={x: testX, y:testY})
 
-def regression(trainX, trainY, testX, testY, numEpochs, learningRate):
+def regression(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias):
 	numFeatures = trainX.shape[1]
 	numLabels = trainY.shape[1]
 
@@ -75,8 +75,8 @@ def regression(trainX, trainY, testX, testY, numEpochs, learningRate):
 	y = tf.placeholder(tf.float32, [None, numLabels])
 
 	# Define weight and bias variables
-	weights = tf.Variable(tf.zeros([numFeatures, numLabels]))
-	bias  = tf.Variable(tf.ones([1, numLabels]))
+	#weights = tf.Variable(tf.zeros([numFeatures, numLabels]))
+	#bias  = tf.Variable(tf.ones([1, numLabels]))
 
 
 	# Define operations
@@ -115,6 +115,12 @@ def regression(trainX, trainY, testX, testY, numEpochs, learningRate):
 	# Testing
 	print("final accuracy test on test set: %s" %str(sess.run(accuracy_OP, feed_dict={x: testX, y: testY})))
 
+def getInitWeights(trainX, trainY):
+	return tf.Variable(tf.zeros([trainX.shape[1], trainY.shape[1]]))
+
+def getInitBias(trainY):
+	return tf.Variable(tf.ones([1, trainY.shape[1]]))
+
 def main():
 	trainX = np.array([[1,2],[3,4],[5,6]])
 	trainY = np.array([[0,0,0,1,0], [1,0,0,0,0], [0,0,0,0,1]])
@@ -126,8 +132,11 @@ def main():
 
 	learningRate = 0.0008
 
+	weights = getInitWeights(trainX, trainY)
+	bias = getInitBias(trainY)
+
 	#regression(trainX, trainY, testX, testY, numEpochs, learningRate)
-	[s, weights, bias] = getTrainingSession(trainX, trainY, numEpochs, learningRate)
+	s = getTrainingSession(trainX, trainY, numEpochs, learningRate, weights, bias)
 	print(getResultVector(s, testX, testY, weights, bias))
 	getResultAccuracy(s, testX, testY, weights, bias)
 	#print("final accuracy test on test set: %s" %str(s.run(accuracy_OP, feed_dict={x: testX, y:testY})))
