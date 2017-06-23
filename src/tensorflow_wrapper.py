@@ -44,7 +44,8 @@ def getTrainingSession(trainX, trainY, numEpochs, learningRate, weights, bias):
 def getResultAccuracy(session, testX, testY, weights, bias):
 	resultVector = getResultVector(session, testX, testY, weights, bias)
 	#print(tf.cast(resultVector, ""))
-	print(str(session.run(tf.reduce_mean(tf.cast(resultVector, "float")))))
+	return str(session.run(tf.reduce_mean(tf.cast(resultVector, "float"))))
+	#print(str(session.run(tf.reduce_mean(tf.cast(resultVector, "float")))))
 
 def getResultVector(session, testX, testY, weights, bias):
 	numFeatures = testX.shape[1]
@@ -138,7 +139,7 @@ def main():
 	#regression(trainX, trainY, testX, testY, numEpochs, learningRate)
 	s = getTrainingSession(trainX, trainY, numEpochs, learningRate, weights, bias)
 	print(getResultVector(s, testX, testY, weights, bias))
-	getResultAccuracy(s, testX, testY, weights, bias)
+	print(getResultAccuracy(s, testX, testY, weights, bias))
 	#print("final accuracy test on test set: %s" %str(s.run(accuracy_OP, feed_dict={x: testX, y:testY})))
 
 if __name__ == '__main__':
