@@ -4,6 +4,7 @@ import subprocess
 import math
 import cluster
 import average
+import pandas
 import numpy as np
 from collections import Counter
 
@@ -220,4 +221,3 @@ def filterReviews(reviews, Zindex):
 		if temp:
 			res.append(temp)
 	return res
-

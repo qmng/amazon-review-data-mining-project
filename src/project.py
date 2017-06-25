@@ -4,6 +4,7 @@ import numpy as np
 import tensorflow_wrapper as tw
 import process
 import performance
+import os.path
 from collections import Counter
 
 def printNonZero(d):
@@ -46,11 +47,17 @@ def clusterPrepare(product, numEpochs, alpha, delta):
 
 def clusterDemo(product, numEpochs, alpha, delta):
 	params = clusterPrepare(product, numEpochs, alpha, delta)
-	tw.regression(params[0], params[1], params[2], params[3], params[4], params[5])
+	weights = tw.getInitWeights(params[0], params[1])
+	bias = tw.getInitBias(params[1])
+	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
+	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+	return v
 
 def clusterVector(product, numEpochs, alpha, delta):
-	params = deltaPrepare(product, numEpochs, alpha, delta)
-	[s, weights, bias] = tw.getTrainingSession(params[0], params[1], params[4], params[5])
+	params = clusterPrepare(product, numEpochs, alpha, delta)
+	weights = tw.getInitWeights(params[0], params[1])
+	bias = tw.getInitBias(params[1])
+	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
 	v = tw.getResultVector(s, params[2], params[3], weights, bias)
 	return v
 
@@ -82,11 +89,17 @@ def basePrepare(product, numEpochs, alpha):
 
 def baseDemo(product, numEpochs, alpha):
 	params = basePrepare(product, numEpochs, alpha)
-	tw.regression(params[0], params[1], params[2], params[3], params[4], params[5])
+	weights = tw.getInitWeights(params[0], params[1])
+	bias = tw.getInitBias(params[1])
+	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
+	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+	return v
 
 def baseVector(product, numEpochs, alpha):
 	params = basePrepare(product, numEpochs, alpha)
-	[s, weights, bias] = tw.getTrainingSession(params[0], params[1], params[4], params[5])
+	weights = tw.getInitWeights(params[0], params[1])
+	bias = tw.getInitBias(params[1])
+	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
 	v = tw.getResultVector(s, params[2], params[3], weights, bias)
 	return v
 
@@ -118,15 +131,21 @@ def averagePrepare(product, numEpochs, alpha):
 
 def averageDemo(product, numEpochs, alpha):
 	params = averagePrepare(product, numEpochs, alpha)
-	tw.regression(params[0], params[1], params[2], params[3], params[4], params[5])
+	weights = tw.getInitWeights(params[0], params[1])
+	bias = tw.getInitBias(params[1])
+	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
+	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+	return v
 
 def averageVector(product, numEpochs, alpha):
 	params = averagePrepare(product, numEpochs, alpha)
-	[s, weights, bias] = tw.getTrainingSession(params[0], params[1], params[4], params[5])
+	weights = tw.getInitWeights(params[0], params[1])
+	bias = tw.getInitBias(params[1])
+	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
 	v = tw.getResultVector(s, params[2], params[3], weights, bias)
 	return v
 
-def fusionPreapare(product, numEpochs, alpha, delta):
+def fusionPrepare(product, numEpochs, alpha, delta):
 	#Create path of all the reviews
 	allpath = "../../datasets/reviews_"+product+".csv"
 	#Create paths of training and testing reviews
@@ -154,35 +173,61 @@ def fusionPreapare(product, numEpochs, alpha, delta):
 
 def fusionDemo(product, numEpochs, alpha, delta):
 	params = fusionPrepare(product, numEpochs, alpha, delta)
-	tw.regression(params[0], params[1], params[2], params[3], params[4], params[5])
+	weights = tw.getInitWeights(params[0], params[1])
+	bias = tw.getInitBias(params[1])
+	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
+	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+	return v
 
 def fusionVector(product, numEpochs, alpha, delta):
 	params = fusionPrepare(product, numEpochs, alpha, delta)
-	[s, weights, bias] = tw.getTrainingSession(params[0], params[1], params[4], params[5])
+	weights = tw.getInitWeights(params[0], params[1])
+	bias = tw.getInitBias(params[1])
+	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
 	v = tw.getResultVector(s, params[2], params[3], weights, bias)
 	return v
 
 def compareModels(m1, m2, params):
+#	[dfNemar, dfSuccess] = process.openFiles(params['product'])
 	if m1 == "base":
+		a1 = baseDemo(params['product'], params['numEpochs'], params['alpha'])
 		v1 = baseVector(params['product'], params['numEpochs'], params['alpha'])
 	if m1 == "cluster":
+		a1 = clusterDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 		v1 = clusterVector(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 	if m1 == "average":
+		a1 = averageDemo(params['product'], params['numEpochs'], params['alpha'])
 		v1 = averageVector(params['product'], params['numEpochs'], params['alpha'])
 	if m1 == "fusion":
+		a1 = fusionDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 		v1 = fusionVector(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 	if m2 == "base":
+		a2 = baseDemo(params['product'], params['numEpochs'], params['alpha'])
 		v2 = baseVector(params['product'], params['numEpochs'], params['alpha'])
 	if m2 == "cluster":
+		a2 = clusterDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 		v2 = clusterVector(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 	if m2 == "average":
+		a2 = averageDemo(params['product'], params['numEpochs'], params['alpha'])
 		v2 = averageVector(params['product'], params['numEpochs'], params['alpha'])
 	if m2 == "fusion":
+		a2 = fusionDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 		v2 = fusionVector(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 	[n01, n10] = performance.countMissclassified(v1, v2)
-	print("n01:",n01)
-	print()
-	print("n10:",n10)
+	resNemar = [m1, m2, n01, n10, params['alpha'], params['numEpochs'], params['delta']]
+	resSuccess = [m1, m2, a1, a2, params['alpha'], params['numEpochs'], params['delta']]
+	dfNemar = pandas.DataFrame([resNemar])
+	pathNemar = "Results/"+params['product']+"/mcnemar_"+params['product']+".csv"
+	pathSuccess = "Results/"+params['product']+"/success_"+params['product']+".csv"
+	if os.path.isfile(pathNemar):
+		dfNemar.to_csv(open(pathNemar, 'a', encoding='utf-8-sig'), index=False, header=False, encoding='utf-8-sig')
+	else:
+		dfNemar.to_csv(open(pathNemar, 'a', encoding='utf-8-sig'), index=False, header=['nom1', 'nom2', 'n01', 'n10', 'alpha', 'numEpochs', 'delta'], encoding='utf-8-sig')
+	dfSuccess = pandas.DataFrame([resSuccess])
+	if os.path.isfile(pathSuccess):
+		dfSuccess.to_csv(open(pathSuccess, 'a', encoding='utf-8-sig'), index=False, header=False, encoding='utf-8-sig')
+	else:
+		dfSuccess.to_csv(open(pathSuccess, 'a', encoding='utf-8-sig'), index=False, header=['nom1', 'nom2', 'success1', 'success2', 'alpha', 'numEpochs', 'delta'], encoding='utf-8-sig')
 
 def main(argv):
 	params = {}
@@ -200,13 +245,13 @@ def main(argv):
 		baseDemo(params['product'], params['numEpochs'], params['alpha'])
 	elif model1 == "cluster":
 		delta = float(argv[5])
-		clusterDemo(product, numEpochs, alpha, delta)
+		clusterDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 	elif model1 == "average":
-		averageDemo(product, numEpochs, alpha)
+		averageDemo(params['product'], params['numEpochs'], params['alpha'])
 	elif model1 == "fusion":
 		params['delta'] = float(argv[5])
-		fusionDemo(product, numEpochs, alpha, delta)
-
+		fusionDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'])
 """
+
 if __name__ == '__main__':
 	main(sys.argv)
