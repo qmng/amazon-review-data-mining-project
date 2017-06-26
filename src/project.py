@@ -42,15 +42,15 @@ def clusterPrepare(product, numEpochs, alpha, delta):
 	#Create the vectors of the evaluations
 	trainY = np.array(process.formatY(df_train))
 	testY = np.array(process.formatY(df_test))
-	
+
 	return [trainX, trainY, testX, testY, numEpochs, alpha]
 
 def clusterDemo(product, numEpochs, alpha, delta):
 	params = clusterPrepare(product, numEpochs, alpha, delta)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias)
-	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+	s = tw.getTrainingSession3(params[0], params[1], params[4], params[5], weights, bias, 'cross_entropy')
+	v = tw.getResultAccuracy2(s, params[2], params[3], weights, bias)
 	return v
 
 def clusterVector(product, numEpochs, alpha, delta):
@@ -168,7 +168,7 @@ def fusionPrepare(product, numEpochs, alpha, delta):
 	#Create the vectors of the evaluations
 	trainY = np.array(process.formatY(df_train))
 	testY = np.array(process.formatY(df_test))
-	
+
 	return [trainX, trainY, testX, testY, numEpochs, alpha]
 
 def fusionDemo(product, numEpochs, alpha, delta):
@@ -238,7 +238,8 @@ def main(argv):
 	params['alpha'] = float(argv[5])
 	params['delta'] = float(argv[6])
 
-	compareModels(model1, model2, params)
+	print(clusterDemo(params['product'], params['numEpochs'], params['alpha'], params['delta']))
+	#compareModels(model1, model2, params)
 """
 
 	if model1 == "base":

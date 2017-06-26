@@ -14,7 +14,8 @@ def getXYZ(df, colX, colY, colZ):
 	"""
 	Computes meshgrid X,Y and matrix Z for surface plot.
 	colX is the first column parameter, ex: learning rate.
-	colY is the second column, ex: number of epochs
+	colY is the second column, ex: number of epochs.
+	colZ is the third column, ex: success rate.
 	"""
 
 	# Get data of colX and colY in list format and remove duplicate values

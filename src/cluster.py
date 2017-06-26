@@ -100,7 +100,7 @@ def filterReviews(reviews, Zindex):
 
 def convertMetaDict(metadict, metawords):
 	"""
-	Converts metadict format.
+	Changes metadict format to be easier to process, especially in createMetaZ
 	Metadict is in format {w1: mw1, w2: m1, w3: m2, w4: m2}
 	Returned format is {m1: [w1, w2], m2: [w3, w4]}
 	"""
