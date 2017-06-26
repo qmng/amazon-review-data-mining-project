@@ -233,13 +233,21 @@ def main(argv):
 	model1 = argv[1]
 	model2 = argv[2]
 	params['product'] = argv[3]
-	params['numEpochs'] = int(argv[4])
-	params['alpha'] = float(argv[5])
-	params['delta'] = float(argv[6])
-	params['lossFunc'] = argv[7]
+	params['lossFunc'] = argv[4]
+
+	for nepochs in range(500, 501, 500):
+		params['numEpochs'] = nepochs
+		for i in range(0, 10):
+			params['alpha'] = float(10**(-i))
+			for delta in range(-2, 3):
+				params['delta'] = float(10**delta)
+				compareModels(model1, model2, params)
+#	params['numEpochs'] = int(argv[4])
+#	params['alpha'] = float(argv[5])
+#	params['delta'] = float(argv[6])
 
 #	print(clusterDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc']))
-	compareModels(model1, model2, params)
+#	compareModels(model1, model2, params)
 """
 
 	if model1 == "base":
