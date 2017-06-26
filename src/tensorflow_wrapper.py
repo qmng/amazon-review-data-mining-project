@@ -1,7 +1,7 @@
 import tensorflow as tf
 import numpy as np
 
-def getTrainingSession(trainX, trainY, numEpochs, learningRate, weights, bias):
+def getTrainingSession3(trainX, trainY, numEpochs, learningRate, weights, bias):
 	numFeatures = trainX.shape[1]
 	numLabels = trainY.shape[1]
 
@@ -67,7 +67,7 @@ def getTrainingSession2(trainX, trainY, numEpochs, learningRate, weights, bias):
 
 	return sess
 
-def getTrainingSession3(trainX, trainY, numEpochs, learningRate, weights, bias, lossFuncName):
+def getTrainingSession(trainX, trainY, numEpochs, learningRate, weights, bias, lossFuncName):
 	numFeatures = trainX.shape[1]
 	numLabels = trainY.shape[1]
 
@@ -113,7 +113,7 @@ def getResultAccuracy2(session, testX, testY, weights, bias):
 	resultVector = getResultVector2(session, testX, testY, weights, bias)
 	return str(session.run(tf.reduce_mean(tf.cast(resultVector, "float"))))
 
-def getResultVector(session, testX, testY, weights, bias):
+def getResultVector2(session, testX, testY, weights, bias):
 	numFeatures = testX.shape[1]
 	numLabels = testY.shape[1]
 
@@ -128,7 +128,7 @@ def getResultVector(session, testX, testY, weights, bias):
 
 	return session.run(correct_OP, feed_dict={x: testX, y:testY})
 
-def getResultVector2(session, testX, testY, weights, bias):
+def getResultVector(session, testX, testY, weights, bias):
 	numFeatures = testX.shape[1]
 	numLabels = testY.shape[1]
 
