@@ -133,7 +133,7 @@ def getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weigh
 	numFeatures = trainX.shape[1]
 	numLabels = trainY.shape[1]
 
-	learningRate = tf.train.exponential_decay(learning_rate = learningRate,
+	lr = tf.train.exponential_decay(learning_rate = learningRate,
 												global_step = 1,
 												decay_steps = trainX.shape[0],
 												decay_rate = 0.95,
@@ -143,7 +143,7 @@ def getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weigh
 	y_ = tf.placeholder(tf.float32, [None, numLabels]) # True labels tensor
 
 	y = tf.nn.softmax(tf.matmul(x, weights) + bias) # Predicted label
-	training = tf.train.GradientDescentOptimizer(learningRate).minimize(loss(lossFuncName, y, y_))
+	training = tf.train.GradientDescentOptimizer(lr).minimize(loss(lossFuncName, y, y_))
 
 	sess = tf.Session()
 	sess.run(tf.global_variables_initializer())
@@ -151,9 +151,19 @@ def getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weigh
 	for i in range(numEpochs):
 		sess.run(training, feed_dict={x: trainX, y_: trainY})
 
+		if i%1000 == 0:
+			vec_accuracy = sess.run(tf.equal(tf.arg_max(y_, 1), tf.argmax(y,1)), feed_dict={x: trainX, y_: trainY})
+			train_accuracy = sess.run(tf.reduce_mean(tf.cast(vec_accuracy, "float")))
+			print(train_accuracy)
+
+			if train_accuracy > 0.95:
+				print("numEpochs: ", i)
+				break
+
+
 	predicted = tf.equal(tf.arg_max(y_, 1), tf.argmax(y, 1)) # Computes element wise comparison between predicted labels and true labels
 
-	return sess.run(predicted, feed_dict={x: testX, y_:testY})
+	return sess.run(predicted, feed_dict={x: testX, y_: testY})
 
 def regression(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias):
 	numFeatures = trainX.shape[1]
@@ -219,7 +229,7 @@ def main():
 	trainX = np.array([[1,2],[3,4],[5,6]])
 	trainY = np.array([[0,0,0,1,0], [1,0,0,0,0], [0,0,0,0,1]])
 
-	testX = np.array([[1,2],[3,4],[5,6]])
+	testX = np.array([[1,2],[3,4],[6,6]])
 	testY = np.array([[0,0,0,1,0], [1,0,0,0,0], [0,0,0,0,1]])
 
 	numEpochs = 27000
@@ -230,8 +240,8 @@ def main():
 	bias = getInitBias(trainY)
 
 	#regression(trainX, trainY, testX, testY, numEpochs, learningRate)
-	print(getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, "l2"))
-	print(getResultAccuracy(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, "l2"))
+	#print(getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, "l2"))
+	print("Result: ", getResultAccuracy(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, "l2"))
 	#print("final accuracy test on test set: %s" %str(s.run(accuracy_OP, feed_dict={x: testX, y:testY})))
 
 if __name__ == '__main__':
