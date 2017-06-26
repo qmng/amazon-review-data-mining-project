@@ -138,9 +138,9 @@ def getResultVector2(session, testX, testY, weights, bias):
 	# Define operations
 	y = tf.nn.softmax(tf.matmul(x, weights) + bias)
 	#activation_OP = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y) # softmax regression function
-	correct_OP = tf.equal(tf.arg_max(y_, 1), tf.argmax(y, 1)) # Computes element wise comparison between predicted labels and true labels
+	predicted = tf.equal(tf.arg_max(y_, 1), tf.argmax(y, 1)) # Computes element wise comparison between predicted labels and true labels
 
-	return session.run(correct_OP, feed_dict={x: testX, y_:testY})
+	return session.run(predicted, feed_dict={x: testX, y_:testY})
 
 def regression(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias):
 	numFeatures = trainX.shape[1]
