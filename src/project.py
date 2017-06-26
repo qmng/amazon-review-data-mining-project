@@ -49,16 +49,16 @@ def clusterDemo(product, numEpochs, alpha, delta, lossFunc):
 	params = clusterPrepare(product, numEpochs, alpha, delta)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
+	v = tw.getResultAccuracy(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
 	return v
 
 def clusterVector(product, numEpochs, alpha, delta, lossFunc):
 	params = clusterPrepare(product, numEpochs, alpha, delta)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultVector(s, params[2], params[3], weights, bias)
+#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
+	v = tw.getResultVector(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
 	return v
 
 def basePrepare(product, numEpochs, alpha):
@@ -91,16 +91,16 @@ def baseDemo(product, numEpochs, alpha, lossFunc):
 	params = basePrepare(product, numEpochs, alpha)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
+	v = tw.getResultAccuracy(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
 	return v
 
 def baseVector(product, numEpochs, alpha, lossFunc):
 	params = basePrepare(product, numEpochs, alpha)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultVector(s, params[2], params[3], weights, bias)
+#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
+	v = tw.getResultVector(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
 	return v
 
 def averagePrepare(product, numEpochs, alpha):
@@ -133,16 +133,16 @@ def averageDemo(product, numEpochs, alpha, lossFunc):
 	params = averagePrepare(product, numEpochs, alpha)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
+	v = tw.getResultAccuracy(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
 	return v
 
 def averageVector(product, numEpochs, alpha, lossFunc):
 	params = averagePrepare(product, numEpochs, alpha)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultVector(s, params[2], params[3], weights, bias)
+#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
+	v = tw.getResultVector(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
 	return v
 
 def fusionPrepare(product, numEpochs, alpha, delta):
@@ -175,16 +175,16 @@ def fusionDemo(product, numEpochs, alpha, delta, lossFunc):
 	params = fusionPrepare(product, numEpochs, alpha, delta)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultAccuracy(s, params[2], params[3], weights, bias)
+#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
+	v = tw.getResultAccuracy(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
 	return v
 
 def fusionVector(product, numEpochs, alpha, delta, lossFunc):
 	params = fusionPrepare(product, numEpochs, alpha, delta)
 	weights = tw.getInitWeights(params[0], params[1])
 	bias = tw.getInitBias(params[1])
-	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultVector(s, params[2], params[3], weights, bias)
+#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
+	v = tw.getResultVector(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
 	return v
 
 def compareModels(m1, m2, params):
