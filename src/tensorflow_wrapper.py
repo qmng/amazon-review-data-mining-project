@@ -103,10 +103,11 @@ def loss(name, y, y_):
 	elif name == 'l2':
 		return tf.nn.l2_loss(y-y_)
 
-def getResultAccuracy(session, testX, testY, weights, bias):
-	resultVector = getResultVector(session, testX, testY, weights, bias)
+def getResultAccuracy(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, lossFuncName):
+	resultVector = getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, lossFuncName)
 	#print(tf.cast(resultVector, ""))
-	return str(session.run(tf.reduce_mean(tf.cast(resultVector, "float"))))
+	sess = tf.Session()
+	return str(sess.run(tf.reduce_mean(tf.cast(resultVector, "float"))))
 	#print(str(session.run(tf.reduce_mean(tf.cast(resultVector, "float")))))
 
 def getResultAccuracy2(session, testX, testY, weights, bias):
@@ -128,19 +129,31 @@ def getResultVector2(session, testX, testY, weights, bias):
 
 	return session.run(correct_OP, feed_dict={x: testX, y:testY})
 
-def getResultVector(session, testX, testY, weights, bias):
-	numFeatures = testX.shape[1]
-	numLabels = testY.shape[1]
+def getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, lossFuncName):
+	numFeatures = trainX.shape[1]
+	numLabels = trainY.shape[1]
 
-	x = tf.placeholder(tf.float32, [None, numFeatures])
-	y_ = tf.placeholder(tf.float32, [None, numLabels])
+	learningRate = tf.train.exponential_decay(learning_rate = learningRate,
+												global_step = 1,
+												decay_steps = trainX.shape[0],
+												decay_rate = 0.95,
+												staircase = True)
 
-	# Define operations
-	y = tf.nn.softmax(tf.matmul(x, weights) + bias)
-	#activation_OP = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=y) # softmax regression function
+	x = tf.placeholder(tf.float32, [None, numFeatures]) # Instances tensor
+	y_ = tf.placeholder(tf.float32, [None, numLabels]) # True labels tensor
+
+	y = tf.nn.softmax(tf.matmul(x, weights) + bias) # Predicted label
+	training = tf.train.GradientDescentOptimizer(learningRate).minimize(loss(lossFuncName, y, y_))
+
+	sess = tf.Session()
+	sess.run(tf.global_variables_initializer())
+
+	for i in range(numEpochs):
+		sess.run(training, feed_dict={x: trainX, y_: trainY})
+
 	predicted = tf.equal(tf.arg_max(y_, 1), tf.argmax(y, 1)) # Computes element wise comparison between predicted labels and true labels
 
-	return session.run(predicted, feed_dict={x: testX, y_:testY})
+	return sess.run(predicted, feed_dict={x: testX, y_:testY})
 
 def regression(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias):
 	numFeatures = trainX.shape[1]
@@ -217,9 +230,8 @@ def main():
 	bias = getInitBias(trainY)
 
 	#regression(trainX, trainY, testX, testY, numEpochs, learningRate)
-	s = getTrainingSession(trainX, trainY, numEpochs, learningRate, weights, bias)
-	print(getResultVector(s, testX, testY, weights, bias))
-	print(getResultAccuracy(s, testX, testY, weights, bias))
+	print(getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, "l2"))
+	print(getResultAccuracy(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, "l2"))
 	#print("final accuracy test on test set: %s" %str(s.run(accuracy_OP, feed_dict={x: testX, y:testY})))
 
 if __name__ == '__main__':
