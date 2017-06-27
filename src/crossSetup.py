@@ -4,7 +4,7 @@ import os
 import numpy
 
 #Creates test.csv for oral-b's kFold cross validation
-df = pandas.read_csv("../../datasets/reviews_oral-b.csv")
+df = pandas.read_csv("../../datasets/reviews_all.csv")
 df = df.sample(frac=1)
 k = 10
 splitLen = round(len(df)/k)
@@ -16,5 +16,5 @@ for k in range(1,k-1):
 	tests.append(df[tempLen1:tempLen2])
 tests.append(df[tempLen2:])
 for n in range(len(tests)):
-	path = 'kFold/test_oral-b_'+str(n)+'.csv'
+	path = 'kFold/test_all_'+str(n)+'.csv'
 	tests[n].to_csv(path)
