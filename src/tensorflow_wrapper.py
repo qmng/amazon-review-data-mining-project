@@ -5,8 +5,10 @@ def getTrainingSession3(trainX, trainY, numEpochs, learningRate, weights, bias):
 	numFeatures = trainX.shape[1]
 	numLabels = trainY.shape[1]
 
+	global_step = tf.Variable(1, trainable=False)
+
 	learningRate = tf.train.exponential_decay(learning_rate = learningRate,
-												global_step = 1,
+												global_step = global_step,
 												decay_steps = trainX.shape[0],
 												decay_rate = 0.95,
 												staircase = True)
@@ -133,8 +135,10 @@ def getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weigh
 	numFeatures = trainX.shape[1]
 	numLabels = trainY.shape[1]
 
+	global_step = tf.Variable(1, trainable=False)
+
 	lr = tf.train.exponential_decay(learning_rate = learningRate,
-												global_step = 1,
+												global_step = global_step,
 												decay_steps = trainX.shape[0],
 												decay_rate = 0.95,
 												staircase = True)
@@ -143,7 +147,7 @@ def getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weigh
 	y_ = tf.placeholder(tf.float32, [None, numLabels]) # True labels tensor
 
 	y = tf.nn.softmax(tf.matmul(x, weights) + bias) # Predicted label
-	training = tf.train.GradientDescentOptimizer(lr).minimize(loss(lossFuncName, y, y_))
+	training = tf.train.GradientDescentOptimizer(lr).minimize(loss(lossFuncName, y, y_), global_step=global_step)
 
 	sess = tf.Session()
 	sess.run(tf.global_variables_initializer())
@@ -154,7 +158,7 @@ def getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weigh
 		if i%1000 == 0:
 			vec_accuracy = sess.run(tf.equal(tf.arg_max(y_, 1), tf.argmax(y,1)), feed_dict={x: trainX, y_: trainY})
 			train_accuracy = sess.run(tf.reduce_mean(tf.cast(vec_accuracy, "float")))
-			print(train_accuracy)
+			print("train_accuracy:",train_accuracy)
 
 			if train_accuracy > 0.95:
 				print("numEpochs: ", i)
@@ -214,7 +218,7 @@ def regression(trainX, trainY, testX, testY, numEpochs, learningRate, weights, b
 
 			accuracy_values.append(train_accuracy)
 
-			print(train_accuracy)
+			print("train_accuracy2:",train_accuracy)
 
 	# Testing
 	print("final accuracy test on test set: %s" %str(sess.run(accuracy_OP, feed_dict={x: testX, y: testY})))
