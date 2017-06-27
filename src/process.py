@@ -155,6 +155,10 @@ def sumListDictionary(X):
 
 #Processes reviews to generate a vector of stemmed words.
 def processReviews(df):
+	"""
+	Apply all pre-processing operations to the reviews (under dataframe format)
+	"""
+
 	stopWords = [line.rstrip('\n') for line in open('../../stop_words.txt')]
 	reviews = list(df['review'])
 	reviews = removeApostrophe(reviews)

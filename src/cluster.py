@@ -32,34 +32,34 @@ def createMetaWords(words, Z, index, delta):
 	Changes bag of words by combining words that are similar semantically.
 	Words that are close have a close vectore representation.
 
-	Params:
-	- words: List of words in bag of words.
-	- Z: Matrix containing the vector representation of the words.
-	- index: Dictionary containing the index of each word in Z.
-	- delta: The maximum distance between two semantically close words.
+	words: List of words in bag of words.
+	Z: Matrix containing the vector representation of the words.
+	index: Dictionary containing the index of each word in Z.
+	delta: The maximum distance between two semantically close words.
 
-	Returns the list of metawords and a dictionary where the keys are the words and the values are the corresponding metawords
+	Returns the list of metawords and a dictionary where the keys are the words and the values are the corresponding metawords (mapping structure)
 	"""
+
 	metaId = 0
 	metawords = []
 	metadict = {}
 
 	while (words):
 		w1 = words[0]
-		temp = []
-		temp.append(w1)
-		v1 = np.array(Z[index[w1]])
+		temp = []	# 'temp' will contain the words belonging to the same cluster
+		temp.append(w1)	# Add w1 in the cluster
+		v1 = np.array(Z[index[w1]]) # Find the word2vec vector of w1
 
-		for w2 in words:
-			v2 = np.array(Z[index[w2]])
-			if np.linalg.norm(v1-v2) < delta and w1 != w2:
+		for w2 in words:	# Iterate through the words
+			v2 = np.array(Z[index[w2]]) # Find the word2vec vector of w2
+			if np.linalg.norm(v1-v2) < delta and w1 != w2: # If w1 is different than w2 and they are close enough in the word2vec space, then add w2 to the current cluster
 				 temp.append(w2)
 
-		for w3 in temp:
-			metadict[w3] = 'cluster'+str(metaId)
-			words.remove(w3)
+		for w3 in temp: # Iterate through words belonging to the current cluster
+			metadict[w3] = 'cluster'+str(metaId)  # Add a new entry to the mapping structure for w3
+			words.remove(w3) # Remove w3 from the list of words
 
-		metawords.append('cluster'+str(metaId))
+		metawords.append('cluster'+str(metaId)) # Add the new cluster to the list of cluster
 		metaId += 1
 
 	return [metawords, metadict]
@@ -69,17 +69,16 @@ def getMetaReview(review, metawords, metadict):
 	Computes the metareview of a review.
 
 
-	Params:
-	- review: The review in bag of words format.
-	- metawords: The list of metawords.
-	- metadict: A dictionary where keys are the normal words and values are the corresponding metawords
+	review: The review in bag of words format.
+	metawords: The list of metawords.
+	metadict: A dictionary where keys are the normal words and values are the corresponding metawords
 	"""
 
 	metaReview = {}
-	for i in range(len(metawords)):
+	for i in range(len(metawords)): # Initialise the metaReview as a dictionary where keys are the metaword and the value are initially 0
 		metaReview[metawords[i]] = 0
 
-	for word in review:
+	for word in review: # Fill the metareview
 		metaReview[metadict[word]] += review[word]
 
 	return metaReview
@@ -88,6 +87,11 @@ def getMetaVect(review):
 	return list(review.values())
 
 def filterReviews(reviews, Zindex):
+	"""
+	Filter 'reviews' according to 'Zindex'.
+	Words absent from 'Zindex' will be filtered out of reviews.
+	"""
+
 	res = []
 	for review in reviews:
 		temp = {}
@@ -115,6 +119,12 @@ def convertMetaDict(metadict, metawords):
 	return res
 
 def createMetaZ(Z, index, metawords, metadict):
+	"""
+	Compute the metaZ which contains the word2vec representation of metawords.
+
+	Returns metaZ and index (dictionary containing the metaword -> index in metaZ mapping)
+	"""
+
 	metaZ = []
 	metaIndex = {}
 	convertedDict = convertMetaDict(metadict, metawords)

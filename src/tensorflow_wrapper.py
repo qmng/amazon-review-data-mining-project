@@ -95,6 +95,8 @@ def getTrainingSession(trainX, trainY, numEpochs, learningRate, weights, bias, l
 
 def loss(name, y, y_):
 	"""
+	Returns a tensor in function of the loss function name parameter
+
 	name: Name of the loss function
 	y: The predicted labels
 	y_: The true labels
@@ -106,6 +108,22 @@ def loss(name, y, y_):
 		return tf.nn.l2_loss(y-y_)
 
 def getResultAccuracy(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, lossFuncName):
+	"""
+	Does learning, testing and returns the accuracy rate.
+	The result is a float number.
+	The function first calls getResultVector(), then it computes the success rate.
+
+	trainX: The training instance matrix
+	trainY: the training label matrix
+	testX: The testing instance matrix
+	testY: The training label matrix
+	numEpochs: The number of epochs, model parameter
+	learningRate: The initial learning rate, model parameter
+	weights: The initial weights vector
+	bias: The initial bias
+	lossFuncName: The name of the loss function to be used, model parameter (l2 norm or cross entropy)
+	"""
+
 	resultVector = getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, lossFuncName)
 	#print(tf.cast(resultVector, ""))
 	sess = tf.Session()
@@ -115,6 +133,10 @@ def getResultAccuracy(trainX, trainY, testX, testY, numEpochs, learningRate, wei
 def getResultAccuracy2(session, testX, testY, weights, bias):
 	resultVector = getResultVector2(session, testX, testY, weights, bias)
 	return str(session.run(tf.reduce_mean(tf.cast(resultVector, "float"))))
+
+def getResultAccuracy3(vector):
+		sess = tf.Session()
+		return str(sess.run(tf.reduce_mean(tf.cast(vector, "float"))))
 
 def getResultVector2(session, testX, testY, weights, bias):
 	numFeatures = testX.shape[1]
@@ -132,6 +154,22 @@ def getResultVector2(session, testX, testY, weights, bias):
 	return session.run(correct_OP, feed_dict={x: testX, y:testY})
 
 def getResultVector(trainX, trainY, testX, testY, numEpochs, learningRate, weights, bias, lossFuncName):
+	"""
+	Does learning, testing and returns the result vector.
+	The result vector is a boolean vector of size N where N is the number of instances in the testing set.
+	The result vector indicates when the true testing label was correctly predicted and false otherwise.
+
+	trainX: The training instance matrix
+	trainY: the training label matrix
+	testX: The testing instance matrix
+	testY: The training label matrix
+	numEpochs: The number of epochs, model parameter
+	learningRate: The initial learning rate, model parameter
+	weights: The initial weights vector
+	bias: The initial bias
+	lossFuncName: The name of the loss function to be used, model parameter (l2 norm or cross entropy)
+	"""
+
 	numFeatures = trainX.shape[1]
 	numLabels = trainY.shape[1]
 
