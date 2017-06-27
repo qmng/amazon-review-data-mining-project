@@ -169,30 +169,38 @@ def setupModel(m, prod, delta):
 
 def compareModels(m1, m2, params, setup1, setup2, i):
 	if m1 == "base":
-		a1 = baseDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		#a1 = baseDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 		v1 = baseVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 	if m1 == "cluster":
-		a1 = clusterDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		#a1 = clusterDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 		v1 = clusterVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		#a1 = tw.getResultAccuracy3(v1)
 	if m1 == "average":
-		a1 = averageDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		#a1 = averageDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 		v1 = averageVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		#a1 = tw.getResultAccuracy3(v1)
 	if m1 == "fusion":
-		a1 = fusionDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		#a1 = fusionDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 		v1 = fusionVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+
+	a1 = tw.getResultAccuracy3(v1)
+
 	if m2 == "base":
-		a2 = baseDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
+		#a2 = baseDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 		v2 = baseVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "cluster":
-		a2 = clusterDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
+		#a2 = clusterDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 		v2 = clusterVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "average":
-		a2 = averageDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
+		#a2 = averageDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 		v2 = averageVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "fusion":
-		a2 = fusionDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
+		#a2 = fusionDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 		v2 = fusionVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	[n01, n10] = performance.countMissclassified(v1, v2)
+
+	a2 = tw.getResultAccuracy3(v2)
+
 	resNemar = [params['lossFunc'], m1, m2, n01, n10, params['alpha'], params['numEpochs'], params['delta'], i]
 	resSuccess = [params['lossFunc'], m1, m2, a1, a2, params['alpha'], params['numEpochs'], params['delta'], i]
 	dfNemar = pandas.DataFrame([resNemar])
