@@ -19,7 +19,7 @@ def printThreshold(d, t):
 		if d[key] >= t:
 			print(key, d[key])
 
-def clusterPrepare(product, numEpochs, alpha, delta):
+def clusterPrepare(product, delta):
 	#Create path of all the reviews
 	allpath = "../../datasets/reviews_"+product+".csv"
 	#Create paths of training and testing reviews
@@ -43,25 +43,17 @@ def clusterPrepare(product, numEpochs, alpha, delta):
 	trainY = np.array(process.formatY(df_train))
 	testY = np.array(process.formatY(df_test))
 
-	return [trainX, trainY, testX, testY, numEpochs, alpha]
+	return [trainX, trainY, testX, testY]
 
-def clusterDemo(product, numEpochs, alpha, delta, lossFunc):
-	params = clusterPrepare(product, numEpochs, alpha, delta)
-	weights = tw.getInitWeights(params[0], params[1])
-	bias = tw.getInitBias(params[1])
-#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultAccuracy(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
+def clusterDemo(numEpochs, alpha, lossFunc, setup):
+	v = tw.getResultAccuracy(setup[0], setup[1], setup[2], setup[3], numEpochs, alpha, setup[4], setup[5], lossFunc)
 	return v
 
-def clusterVector(product, numEpochs, alpha, delta, lossFunc):
-	params = clusterPrepare(product, numEpochs, alpha, delta)
-	weights = tw.getInitWeights(params[0], params[1])
-	bias = tw.getInitBias(params[1])
-#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultVector(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
+def clusterVector(numEpochs, alpha, lossFunc, setup):
+	v = tw.getResultVector(setup[0], setup[1], setup[2], setup[3], numEpochs, alpha, setup[4], setup[5], lossFunc)
 	return v
 
-def basePrepare(product, numEpochs, alpha):
+def basePrepare(product):
 	#Create path of all the reviews
 	allpath = "../../datasets/reviews_"+product+".csv"
 	#Create paths of training and testing reviews
@@ -85,25 +77,17 @@ def basePrepare(product, numEpochs, alpha):
 	trainY = np.array(process.formatY(df_train))
 	testY = np.array(process.formatY(df_test))
 
-	return [trainX, trainY, testX, testY, numEpochs, alpha]
+	return [trainX, trainY, testX, testY]
 
-def baseDemo(product, numEpochs, alpha, lossFunc):
-	params = basePrepare(product, numEpochs, alpha)
-	weights = tw.getInitWeights(params[0], params[1])
-	bias = tw.getInitBias(params[1])
-#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultAccuracy(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
+def baseDemo(numEpochs, alpha, lossFunc, setup):
+	v = tw.getResultAccuracy(setup[0], setup[1], setup[2], setup[3], numEpochs, alpha, setup[4], setup[5], lossFunc)
 	return v
 
-def baseVector(product, numEpochs, alpha, lossFunc):
-	params = basePrepare(product, numEpochs, alpha)
-	weights = tw.getInitWeights(params[0], params[1])
-	bias = tw.getInitBias(params[1])
-#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultVector(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
+def baseVector(numEpochs, alpha, lossFunc, setup):
+	v = tw.getResultVector(setup[0], setup[1], setup[2], setup[3], numEpochs, alpha, setup[4], setup[5], lossFunc)
 	return v
 
-def averagePrepare(product, numEpochs, alpha):
+def averagePrepare(product):
 	#Create path of all the reviews
 	allpath = "../../datasets/reviews_"+product+".csv"
 	#Create paths of training and testing reviews
@@ -127,25 +111,17 @@ def averagePrepare(product, numEpochs, alpha):
 	trainY = np.array(process.formatY(df_train))
 	testY = np.array(process.formatY(df_test))
 
-	return [trainX, trainY, testX, testY, numEpochs, alpha]
+	return [trainX, trainY, testX, testY]
 
-def averageDemo(product, numEpochs, alpha, lossFunc):
-	params = averagePrepare(product, numEpochs, alpha)
-	weights = tw.getInitWeights(params[0], params[1])
-	bias = tw.getInitBias(params[1])
-#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultAccuracy(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
+def averageDemo(numEpochs, alpha, lossFunc, setup):
+	v = tw.getResultAccuracy(setup[0], setup[1], setup[2], setup[3], numEpochs, alpha, setup[4], setup[5], lossFunc)
 	return v
 
-def averageVector(product, numEpochs, alpha, lossFunc):
-	params = averagePrepare(product, numEpochs, alpha)
-	weights = tw.getInitWeights(params[0], params[1])
-	bias = tw.getInitBias(params[1])
-#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultVector(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
+def averageVector(numEpochs, alpha, lossFunc, setup):
+	v = tw.getResultVector(setup[0], setup[1], setup[2], setup[3], numEpochs, alpha, setup[4], setup[5], lossFunc)
 	return v
 
-def fusionPrepare(product, numEpochs, alpha, delta):
+def fusionPrepare(product, delta):
 	#Create path of all the reviews
 	allpath = "../../datasets/reviews_"+product+".csv"
 	#Create paths of training and testing reviews
@@ -169,49 +145,57 @@ def fusionPrepare(product, numEpochs, alpha, delta):
 	trainY = np.array(process.formatY(df_train))
 	testY = np.array(process.formatY(df_test))
 
-	return [trainX, trainY, testX, testY, numEpochs, alpha]
+	return [trainX, trainY, testX, testY]
 
-def fusionDemo(product, numEpochs, alpha, delta, lossFunc):
-	params = fusionPrepare(product, numEpochs, alpha, delta)
-	weights = tw.getInitWeights(params[0], params[1])
-	bias = tw.getInitBias(params[1])
-#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultAccuracy(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
+def fusionDemo(numEpochs, alpha, lossFunc, setup):
+	v = tw.getResultAccuracy(setup[0], setup[1], setup[2], setup[3], numEpochs, alpha, setup[4], setup[5], lossFunc)
 	return v
 
-def fusionVector(product, numEpochs, alpha, delta, lossFunc):
-	params = fusionPrepare(product, numEpochs, alpha, delta)
-	weights = tw.getInitWeights(params[0], params[1])
-	bias = tw.getInitBias(params[1])
-#	s = tw.getTrainingSession(params[0], params[1], params[4], params[5], weights, bias, lossFunc)
-	v = tw.getResultVector(params[0], params[1], params[2], params[3], params[4], params[5], weights, bias, lossFunc)
+def fusionVector(numEpochs, alpha, lossFunc, setup):
+	v = tw.getResultVector(setup[0], setup[1], setup[2], setup[3], numEpochs, alpha, setup[4], setup[5], lossFunc)
 	return v
 
-def compareModels(m1, m2, params):
+def setupModel(m, prod, delta):
+	if m == "base":
+		p = basePrepare(prod)
+	if m == "cluster":
+		p =  clusterPrepare(prod, delta)
+	if m == "average":
+		p =  averagePrepare(prod)
+	if m == "fusion":
+		p =  fusionPrepare(prod, delta)
+	weights = tw.getInitWeights(p[0], p[1])
+	bias = tw.getInitBias(p[1])
+	p.append(weights)
+	p.append(bias)
+	# Returns array with: [TrainX, TrainY, TestX, TestY, weights, bias]
+	return p
+
+def compareModels(m1, m2, params, setup1, setup2):
 	if m1 == "base":
-		a1 = baseDemo(params['product'], params['numEpochs'], params['alpha'], params['lossFunc'])
-		v1 = baseVector(params['product'], params['numEpochs'], params['alpha'], params['lossFunc'])
+		a1 = baseDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		v1 = baseVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 	if m1 == "cluster":
-		a1 = clusterDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc'])
-		v1 = clusterVector(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc'])
+		a1 = clusterDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		v1 = clusterVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 	if m1 == "average":
-		a1 = averageDemo(params['product'], params['numEpochs'], params['alpha'], params['lossFunc'])
-		v1 = averageVector(params['product'], params['numEpochs'], params['alpha'], params['lossFunc'])
+		a1 = averageDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		v1 = averageVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 	if m1 == "fusion":
-		a1 = fusionDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc'])
-		v1 = fusionVector(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc'])
+		a1 = fusionDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
+		v1 = fusionVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 	if m2 == "base":
-		a2 = baseDemo(params['product'], params['numEpochs'], params['alpha'], params['lossFunc'])
-		v2 = baseVector(params['product'], params['numEpochs'], params['alpha'], params['lossFunc'])
+		a2 = baseDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
+		v2 = baseVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "cluster":
-		a2 = clusterDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc'])
-		v2 = clusterVector(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc'])
+		a2 = clusterDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
+		v2 = clusterVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "average":
-		a2 = averageDemo(params['product'], params['numEpochs'], params['alpha'], params['lossFunc'])
-		v2 = averageVector(params['product'], params['numEpochs'], params['alpha'], params['lossFunc'])
+		a2 = averageDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
+		v2 = averageVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "fusion":
-		a2 = fusionDemo(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc'])
-		v2 = fusionVector(params['product'], params['numEpochs'], params['alpha'], params['delta'], params['lossFunc'])
+		a2 = fusionDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
+		v2 = fusionVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	[n01, n10] = performance.countMissclassified(v1, v2)
 	resNemar = [params['lossFunc'], m1, m2, n01, n10, params['alpha'], params['numEpochs'], params['delta']]
 	resSuccess = [params['lossFunc'], m1, m2, a1, a2, params['alpha'], params['numEpochs'], params['delta']]
@@ -220,13 +204,17 @@ def compareModels(m1, m2, params):
 	pathSuccess = "Results/"+params['product']+"/success_"+params['product']+".csv"
 	if os.path.isfile(pathNemar):
 		dfNemar.to_csv(open(pathNemar, 'a', encoding='utf-8-sig'), index=False, header=False, encoding='utf-8-sig')
+		print("printed mcnemar.csv")
 	else:
 		dfNemar.to_csv(open(pathNemar, 'a', encoding='utf-8-sig'), index=False, header=['lossFunc', 'nom1', 'nom2', 'n01', 'n10', 'alpha', 'numEpochs', 'delta'], encoding='utf-8-sig')
+		print("printed mcnemar.csv")
 	dfSuccess = pandas.DataFrame([resSuccess])
 	if os.path.isfile(pathSuccess):
 		dfSuccess.to_csv(open(pathSuccess, 'a', encoding='utf-8-sig'), index=False, header=False, encoding='utf-8-sig')
+		print("printed success.csv")
 	else:
 		dfSuccess.to_csv(open(pathSuccess, 'a', encoding='utf-8-sig'), index=False, header=['lossFunc', 'nom1', 'nom2', 'success1', 'success2', 'alpha', 'numEpochs', 'delta'], encoding='utf-8-sig')
+		print("printed success.csv")
 
 def main(argv):
 	params = {}
@@ -235,13 +223,16 @@ def main(argv):
 	params['product'] = argv[3]
 	params['lossFunc'] = argv[4]
 
-	for nepochs in range(500, 501, 500):
-		params['numEpochs'] = nepochs
-		for i in range(0, 10):
+	for delta in range(10, 41, 10):
+		params['delta'] = float(delta)
+		setup1 = setupModel(model1, params['product'], delta)
+		setup2 = setupModel(model2, params['product'], delta)
+		for i in range(0, 2):
 			params['alpha'] = float(10**(-i))
-			for delta in range(-2, 3):
-				params['delta'] = float(10**delta)
-				compareModels(model1, model2, params)
+			for nepochs in range(10000, 100001, 10000):
+				params['numEpochs'] = nepochs
+				compareModels(model1, model2, params, setup1, setup2)
+
 #	params['numEpochs'] = int(argv[4])
 #	params['alpha'] = float(argv[5])
 #	params['delta'] = float(argv[6])
