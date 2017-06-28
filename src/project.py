@@ -172,34 +172,30 @@ def setupModel(m, prod, delta):
 	return p
 
 def compareModels(m1, m2, params, setup1, setup2):
+	"""
+	Compares success rate and mcNemar test with models m1 and m2
+	For the given product (in params['product']).
+	Stores results in Results/<product_name>/
+	"""
+
 	if m1 == "base":
-		#a1 = baseDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 		v1 = baseVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 	if m1 == "cluster":
-		#a1 = clusterDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 		v1 = clusterVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
-		#a1 = tw.getResultAccuracy3(v1)
 	if m1 == "average":
-		#a1 = averageDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 		v1 = averageVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
-		#a1 = tw.getResultAccuracy3(v1)
 	if m1 == "fusion":
-		#a1 = fusionDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 		v1 = fusionVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup1)
 
 	a1 = tw.getResultAccuracy3(v1)
 
 	if m2 == "base":
-		#a2 = baseDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 		v2 = baseVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "cluster":
-		#a2 = clusterDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 		v2 = clusterVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "average":
-		#a2 = averageDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 		v2 = averageVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	if m2 == "fusion":
-		#a2 = fusionDemo(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 		v2 = fusionVector(params['numEpochs'], params['alpha'], params['lossFunc'], setup2)
 	[n01, n10] = performance.countMissclassified(v1, v2)
 
@@ -232,14 +228,14 @@ def main(argv):
 	params['product'] = argv[3]
 	params['lossFunc'] = argv[4]
 
-	for delta in range(10, 41, 10):
+	for delta in range(5, 200, 5):
 		params['delta'] = float(delta)
 		setup1 = setupModel(model1, params['product'], delta)
 		setup2 = setupModel(model2, params['product'], delta)
-		for i in range(0, 2):
-			params['alpha'] = float(10**(-i))
-			for nepochs in range(10000, 100001, 10000):
-				params['numEpochs'] = nepochs
+		for i in range(0, 4):
+			for j in range(1, 5):
+				params['alpha'] = float(2* j * 10**(-i))
+				params['numEpochs'] = 10000
 				compareModels(model1, model2, params, setup1, setup2)
 
 #	params['numEpochs'] = int(argv[4])

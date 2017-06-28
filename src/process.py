@@ -90,6 +90,7 @@ def transformReviews(reviews, d):
 	return res
 
 def formatClusterX(df, wordList, delta):
+	# Creates matrix X formated for the cluster model
 	metaReviews = []
 	reviews = processReviews(df)
 	d = initDictionary(wordList)
@@ -104,6 +105,7 @@ def formatClusterX(df, wordList, delta):
 	return metaReviews
 
 def formatFusionX(df, wordList, delta):
+	# Creates matrix X for the fusion model
 	metaReviews = []
 	reviews = processReviews(df)
 	d = initDictionary(wordList)
@@ -153,7 +155,6 @@ def sumListDictionary(X):
 		temp += Counter(n)
 	return dict(temp)
 
-#Processes reviews to generate a vector of stemmed words.
 def processReviews(df):
 	"""
 	Apply all pre-processing operations to the reviews (under dataframe format)
@@ -188,6 +189,7 @@ def getVector(wordList, bag):
 	return res
 
 def formatBaseX(df, wordList):
+	# Creates matrix X for the base model
 	reviewsshort = processReviews(df)
 	d = initDictionary(wordList)
 	bag = transformReviews(reviewsshort, d)
@@ -195,6 +197,7 @@ def formatBaseX(df, wordList):
 	return vec
 
 def formatAverageX(df, wordList):
+	# Creates matrix X for the average model
 	avgReviews = []
 	reviews = processReviews(df)
 	d = initDictionary(wordList)
@@ -206,6 +209,7 @@ def formatAverageX(df, wordList):
 	return avgReviews
 
 def formatY(df):
+	# Creates vector Y, i.e. for rating 2 it creates a vector [0, 1, 0, 0, 0]
 	Y = list(df['user_rating'])
 	res = []
 	for n in Y:
@@ -214,8 +218,8 @@ def formatY(df):
 		res.append(temp)
 	return res
 
-#Removes words from reviews which are not in Z
 def filterReviews(reviews, Zindex):
+	#Removes words from reviews which are not in Z
 	res = []
 	for review in reviews:
 		temp = {}

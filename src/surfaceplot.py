@@ -89,10 +89,10 @@ def plot(X,Y,Z):
 
 def main():
 	# Filtering test
-	df = pd.read_csv('success_tampax.csv')
+	df = pd.read_csv('success_pantene.csv')
 #	print(findValue(df, 'col1', 0, 'col2', 1, 'col3')) # Print first row's value in 'col3'
 
-	[X,Y,Z] = getFilteredXYZ(df, 'alpha', 'delta', 'success2', 'cross_entropy', 'fusion')
+	[X,Y,Z] = getFilteredXYZ(df, 'alpha', 'delta', 'success2', 'l2', 'cluster')
 	# if X is logarithmic axis, for example alpha
 	X = np.log10(X)
 	plot(X,Y,Z)
